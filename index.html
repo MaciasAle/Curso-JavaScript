@@ -3,12 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./styles.css" />
-    <title>Document</title>
+    <title>Servicios de Peluquería y Venta de Gorras</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .product-list,
+      .service-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .product-list li,
+      .service-list li {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .product-list button,
+      .service-list button {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
-    <h1 class="title">Nuestra 1Preentrega</h1>
-    <!-- <script src="./variables.js"></script> -->
-    <script src="./1PreEntrega.js"></script>
+    <div class="container">
+      <h1>Venta de Gorras</h1>
+      <div id="service-section"></div>
+      <h2>Listado de Gorras</h2>
+      <form id="product-form">
+        <input
+          type="text"
+          id="product-name"
+          placeholder="Nombre de la gorra"
+          required
+        />
+        <input
+          type="number"
+          id="product-price"
+          placeholder="Precio de la gorra"
+          required
+        />
+        <button type="submit">Agregar Gorra</button>
+      </form>
+      <ul class="product-list" id="product-list"></ul>
+    </div>
+    <script src="./2PreEntrega.js"></script>
   </body>
 </html>
