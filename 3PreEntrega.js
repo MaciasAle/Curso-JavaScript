@@ -27,25 +27,48 @@ const productos = [
 
 let carrito = [];
 
+// Función para guardar el carrito en localStorage
+function guardarCarrito() {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+// Función para cargar el carrito desde localStorage
+function cargarCarrito() {
+  const carritoGuardado = localStorage.getItem("carrito");
+  if (carritoGuardado) {
+    carrito = JSON.parse(carritoGuardado);
+  }
+}
+
 function mostrarProductos() {
   const contenedor = document.getElementById("productos");
+  contenedor.innerHTML = ""; // Limpiar contenedor antes de agregar productos
   productos.forEach((producto) => {
-    const productoHTML = `
-            <div class="producto">
-                <img src="${producto.imagen}" alt="${producto.nombre}">
-                <h2>${producto.nombre}</h2>
-                <p>${producto.descripcion}</p>
-                <p>$${producto.precio}</p>
-                <button onclick="agregarAlCarrito(${producto.id})">Agregar al Carrito</button>
-            </div>
-        `;
-    contenedor.innerHTML += productoHTML;
+    const productoHTML = document.createElement("div");
+    productoHTML.classList.add("producto");
+    productoHTML.innerHTML = `
+          <img src="${producto.imagen}" alt="${producto.nombre}">
+          <h2>${producto.nombre}</h2>
+          <p>${producto.descripcion}</p>
+          <p>$${producto.precio}</p>
+          <button data-id="${producto.id}">Agregar al Carrito</button>
+      `;
+    contenedor.appendChild(productoHTML);
+  });
+
+  // Añadir evento a todos los botones de "Agregar al Carrito"
+  document.querySelectorAll(".producto button").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const id = parseInt(e.target.dataset.id);
+      agregarAlCarrito(id);
+    });
   });
 }
 
 function agregarAlCarrito(id) {
   const producto = productos.find((p) => p.id === id);
   carrito.push(producto);
+  guardarCarrito();
   mostrarCarrito();
 }
 
@@ -59,31 +82,38 @@ function mostrarCarrito() {
   }
 
   const tabla = document.createElement("table");
-  const encabezado = `
-        <tr>
-            <th>Producto</th>
-            <th>Precio</th>
-            <th>Acciones</th>
-        </tr>
-    `;
-  tabla.innerHTML = encabezado;
+  tabla.innerHTML = `
+      <tr>
+          <th>Producto</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+      </tr>
+  `;
 
   carrito.forEach((producto, index) => {
-    const fila = `
-            <tr>
-                <td>${producto.nombre}</td>
-                <td>$${producto.precio}</td>
-                <td><button onclick="eliminarDelCarrito(${index})">Eliminar</button></td>
-            </tr>
-        `;
-    tabla.innerHTML += fila;
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+          <td>${producto.nombre}</td>
+          <td>$${producto.precio}</td>
+          <td><button data-index="${index}">Eliminar</button></td>
+      `;
+    tabla.appendChild(fila);
   });
 
   contenedor.appendChild(tabla);
+
+  // Añadir evento a todos los botones de "Eliminar"
+  document.querySelectorAll("#carrito button").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const index = parseInt(e.target.dataset.index);
+      eliminarDelCarrito(index);
+    });
+  });
 }
 
 function eliminarDelCarrito(index) {
   carrito.splice(index, 1);
+  guardarCarrito();
   mostrarCarrito();
 }
 
@@ -114,10 +144,12 @@ function procesarPago(event) {
   alert("Pago procesado exitosamente");
   cerrarFormularioPago();
   carrito = [];
+  guardarCarrito();
   mostrarCarrito();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  cargarCarrito();
   mostrarProductos();
   mostrarCarrito(); // Para inicializar el carrito al cargar la página
   document
